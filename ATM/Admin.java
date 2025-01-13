@@ -1,13 +1,29 @@
 package ATM;
-import java.util.Scanner;
+
+import java.util.ArrayList;
+
 public class Admin {
-    Scanner s = new Scanner(System.in);
-    private static final String Admin_id= "10987";
-    private static final String Admin_pin = "1234";
-    public static String getAdmin_id(){
-        return Admin_id;
+        private String adminName;
+        private String adminPin;
+        public  ArrayList<Transactions> transactions = new ArrayList<>();
+        public Admin(String adminName,String adminPin){
+            this.adminName = adminName;
+            this.adminPin = adminPin;
+        }
+
+    public void setAdminName(String adminName) {
+        this.adminName = adminName;
     }
-    public static String getAdmin_pin(){
-        return Admin_pin;
+    public void setAdminPin(String adminPin) {
+        this.adminPin = adminPin;
     }
+    public String getAdminName(){
+            return this.adminName;
+    }
+    public String getAdminPin(){
+            return adminPin;
+    }
+    public  ArrayList<Transactions> getAdminTransactions(){
+            return transactions;
+}
 }
