@@ -117,7 +117,7 @@ public static User userLogin(Scanner s){
                             System.out.println(showAmount);
                         }
                         System.out.println("Your current balance: "+currentUser.getBalance());
-                        currentUser.getTransactions().add(new Transactions("User","Withdrawn",withdrawAmount));
+                        currentUser.getTransactions().add(new Transactions(currentUser.getUserId(), "Withdrawn",withdrawAmount));
                         return;
                     } else {
                         System.out.println("Wrong denomination...Enter another Amount");
