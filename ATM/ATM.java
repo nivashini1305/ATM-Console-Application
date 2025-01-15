@@ -22,6 +22,9 @@ public class ATM {
         public static long getBalance(){
             return balance;
         }
+        public static void setNotes(ArrayList<Notes> notes){
+            ATM.notes=notes;
+        }
         public static ArrayList<Notes> getNotes(){
             return notes;
         }

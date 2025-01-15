@@ -4,7 +4,7 @@ import java.util.Scanner;
 
 public class ATMActions {
 
-    public static void start() {
+    public static void start() throws CloneNotSupportedException {
         Scanner s = new Scanner(System.in);
         Admin admin = new Admin("admin", "123");//sets the admin name and pin
         ATM.getAdmin().add(admin);//the admin id and admin pin has been set to the admin's array list
@@ -73,7 +73,7 @@ public class ATMActions {
             }
         }
     }
-    public static void userOperations(Scanner s,User currentUser){// the userOperation method has two object that has been passed
+    public static void userOperations(Scanner s,User currentUser) throws CloneNotSupportedException {// the userOperation method has two object that has been passed
         while (true){
             System.out.println("Enter the operations to do\n1.Withdraw Amount\n2.Deposit Amount\n3.Change Pin\n4.View Balance\n5.View User Transaction\n6.Logout");
             int operations =Integer.parseInt(s.nextLine());//enters the user operation to do

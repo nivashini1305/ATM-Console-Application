@@ -73,11 +73,11 @@ public class AdminAction{
                         notes.setCount(notes.getCount() + Notes100);
                         break;
                 }
+            }
                 ATM.setBalance(ATM.getBalance() + depositMoney);
                 System.out.println("The amount of ruppees " + depositMoney + " has been successfully credited");
                 System.out.println("Your current balance:" + ATM.getBalance());
                 currentAdmin.getAdminTransactions().add(new Transactions("Admin", "Deposited", depositMoney));
-            }
         }
         else{
             System.out.println("Wrong denominations");
