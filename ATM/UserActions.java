@@ -1,140 +1,142 @@
 package ATM;
+
 import ATM.Notes.Notes;
 
 import java.util.ArrayList;
 import java.util.Scanner;
+
 public class UserActions {
-public static User userLogin(Scanner s){
-        System.out.print("Enter the user Id:");
-        String userName = s.nextLine();
-        System.out.print("Enter the User Pin:");
-        String adminPin=s.nextLine();
-        for(User user:ATM.getUsers()){
-            if(user.getUserId().equals(userName)&&user.getUserPin().equals(adminPin)){
-                return user;
-            } else if (user.getUserId().equals(userName)&& !user.getUserPin().equals(adminPin)) {
-                User user1=new User(null,null);
-                return user1;
+    public static Accounts userLogin(Scanner s){//method to login for user
+        System.out.print("Enter the user id:");
+        String userId=s.nextLine();
+        System.out.print("Enter the user pin:");
+        String userPin=s.nextLine();
+        for(Accounts user:ATM.getAccounts()) {//Enhanced for loop takes each object in user arraylist
+            if (user instanceof User) {
+                if (user.getUserId().equals(userId) && user.getPin().equals(userPin)) {//checks user id and user pin with the object
+                    return user;
+                } else if (user.getUserId().equals(userId) && !user.getPin().equals(userPin)) {//If the user pin is wrong returns null in this else if block
+                    System.out.println("Wrong pin");
+                    User user1 = new User(null, null,0);
+                    return user1;
+                }
             }
         }
         return null;
     }
-    public static void changepin(Scanner s,User currentUser){
-            System.out.print("Enter the pin to be changed:");
-            String changePin = s.nextLine();
-            currentUser.setUserPin(changePin);
-            System.out.println("The Pin has been changed successfully");
-    }
-    public static void depositMoney(Scanner s,User currentUser){
+    public static void depositAmount(Scanner s,User currentUser){//method to deposit money by user
         System.out.println("Enter the amount to be deposited:");
-        long depositMoney = Long.parseLong(s.nextLine());
-        System.out.println("Enter the number of two Thousand notes:");
-        long Notes2000 = Long.parseLong(s.nextLine());
-        System.out.println("Enter the number of two Five Hundred notes:");
-        long Notes500 = Long.parseLong(s.nextLine());
-        System.out.println("Enter the number of Two Hundred notes:");
-        long Notes200 = Long.parseLong(s.nextLine());
-        System.out.println("Enter the number of One hundred notes:");
-        long Notes100 = Long.parseLong(s.nextLine());
-        long totalAmount = Notes2000 * 2000 + Notes500 * 500 + Notes200 * 200 + Notes100 * 100;
-        if (depositMoney == totalAmount) {
-            for (Notes notes : ATM.getNotes()) {
-                String amount = notes.getNote();
-                switch (amount) {
+        long depositAmount=Long.parseLong(s.nextLine());//enters money to deposit
+        System.out.print("Enter the count of 2000 notes:");
+        long note2k=Long.parseLong(s.nextLine());// number of 2000 rupee note
+        System.out.print("Enter the count of 500 notes:");
+        long note5h=Long.parseLong(s.nextLine());// number of 500 rupee note
+        System.out.print("Enter the count of 200 notes:");
+        long note2h=Long.parseLong(s.nextLine());// number of 200 rupee note
+        System.out.print("Enter the count of 100 notes:");
+        long note1h=Long.parseLong(s.nextLine());// number of 100 rupee note
+        long denominationamount=2000*note2k+500*note5h+200*note2h+100*note1h;//calculates  all the amount of each rupee note
+        if(depositAmount==denominationamount){//checks calculated amount and deposited amount
+            System.out.println("Denomination successfully done!!");
+            for(Notes notes:ATM.getNotes()) {//enhanced for loop to check each notes in ATM
+                String note = notes.getNote();//stores  each note in the note variable
+                switch (note) {//switch case to set the note count for each note
                     case "2000":
-                        notes.setCount(notes.getCount() + Notes2000);
-                        break;
+                        notes.setCount(notes.getCount() + note2k);
                     case "500":
-                        notes.setCount(notes.getCount() + Notes500);
-                        break;
+                        notes.setCount(notes.getCount() + note5h);
                     case "200":
-                        notes.setCount(notes.getCount() + Notes200);
-                        break;
+                        notes.setCount(notes.getCount() + note2h);
                     case "100":
-                        notes.setCount(notes.getCount() + Notes100);
-                        break;
+                        notes.setCount(notes.getCount() + note1h);
                 }
             }
-                currentUser.setBalance(currentUser.getBalance() + depositMoney);
-                ATM.setBalance(ATM.getBalance() + depositMoney);
-                System.out.println("The amount of ruppees " + depositMoney + " has been successfully credited");
-                System.out.println("Your balance:" + currentUser.getBalance());
-                System.out.println("Your current ATM balance:" + ATM.getBalance());
-                currentUser.getTransactions().add(new Transactions("Admin", "Deposited", depositMoney));
+                currentUser.setBalance(currentUser.getBalance()+depositAmount);//sets the user balance
+                ATM.setBalance(ATM.getBalance()+depositAmount);//sets the ATM balance
+                System.out.println("The current balance of your account:"+currentUser.getBalance());//prints the user balance
+                System.out.println("The current balance of ATM:"+ATM.getBalance());//prints the ATM balance
+                currentUser.getTransactions().add(new Transactions( "deposited", currentUser.getBalance()));//adds the object of Transaction
         }
-        else{
+        else {
             System.out.println("Wrong denomination");
         }
     }
-    public static void viewBalance(User currentUser){
-        System.out.println("The current Balance of"+currentUser.getUserId()+"is"+currentUser.getBalance());
-    }
-    public static long performWithdraw(long withdrawAmount,Notes notes,ArrayList<String> denomination ){
-            long Note = Long.parseLong(notes.getNote());
-            long noteCount = withdrawAmount/Note;
-
-            if(withdrawAmount>=Note && 0 < notes.getCount()){
-                if(noteCount<=notes.getCount()){
-                    long  AmountToWithdraw = withdrawAmount-noteCount*Note;
-                    notes.setCount(notes.getCount()-noteCount);
-                    denomination.add("You got "+noteCount+" "+notes.getNote()+" Notes");
-                    return AmountToWithdraw;
-                }
-                else {
-                    long AmountToWithDraw=withdrawAmount-Note*notes.getCount();
-                    denomination.add("You got "+notes.getCount()+" "+notes.getNote()+" Notes");
-                    notes.setCount(0);
-                    return AmountToWithDraw;
-                }
-            }
-            return withdrawAmount;
-    }
-    public static void withDrawMoney(Scanner s,User currentUser) throws CloneNotSupportedException {
-         ArrayList<Notes> duplicate = new ArrayList<>();
-         ArrayList<String> denomination = new ArrayList<>();
-        System.out.println("Enter the amount to be withdraw: ");
-        long withdrawAmount = Long.parseLong(s.nextLine());
-        if(withdrawAmount<=ATM.getBalance()){
-            if(withdrawAmount<= currentUser.getBalance()) {
-                long duplicateWithDrawAmount = withdrawAmount;
-                for (Notes notes : ATM.getNotes()) {
-                    duplicate.add((Notes) notes.clone());
-                }
-                while (withdrawAmount != 0) {
-                    for (Notes notesAmount : duplicate) {
-                        String notes = notesAmount.getNote();
-                        switch (notes) {
+    public static void withDrawAmount(Scanner s, User currentUser) throws CloneNotSupportedException {
+        System.out.println("Enter the amount to be withdraw:");
+        long withDrawAmount = Long.parseLong(s.nextLine());//enters the amount to be withdrawn
+        ArrayList<Notes> duplicate = new ArrayList<>();//creates another arraylist for Notes to clone and store the updated notes instead of changing the original array list
+        ArrayList<String> showNoteCount = new ArrayList<>();//arraylist for string to store the notes which will be given to the number of notes to be withdrawn
+        if (withDrawAmount <= ATM.getBalance()) {//checks the withdrawal amount that should be less than ATM balance
+            if (withDrawAmount <= currentUser.getBalance()) {//checks the withdrawal amount that should be less than current balance of user
+                long amount = withDrawAmount;//stores the withdrawal to the variable
+                for (Notes notes : ATM.getNotes()) {//loops the notes arraylist
+                    duplicate.add((Notes)notes.clone());//clones the notes object and adds to the duplicate arraylist
+                    }
+                if (withDrawAmount!=0) {
+                    for (Notes notes : duplicate) {//loop for duplicate arraylist
+                        String amountOfNote = notes.getNote();//stores each note in the amountOfNote
+                        switch (amountOfNote) {
                             case "2000", "500", "200", "100":
-                               withdrawAmount = UserActions.performWithdraw(withdrawAmount, notesAmount, denomination);
+                                withDrawAmount = UserActions.performWithdraw(withDrawAmount, notes, showNoteCount);//calls the performwithdraw method for each object...for the first loop,the 2000 note goes and perform the perform withdraw method
                                 break;
                         }
                     }
-                    if (withdrawAmount == 0) {
-                        ATM.setNotes(duplicate);
-                        currentUser.setBalance(currentUser.getBalance() - duplicateWithDrawAmount);
-                        ATM.setBalance(ATM.getBalance()-duplicateWithDrawAmount);
-                        for(String showAmount:denomination){
-                            System.out.println(showAmount);
+                    if (withDrawAmount == 0) {
+                        ATM.setNotes(duplicate);//sets the duplicate arraylist to the original arraylist
+                        currentUser.setBalance(currentUser.getBalance() - amount);//sets the user balance after withdrawal
+                        ATM.setBalance(ATM.getBalance() - amount);//sets the ATM balance
+                        for (String denomination : showNoteCount) {//loops the string arraylist
+                            System.out.println(denomination);//prints the supplied notes
                         }
-                        System.out.println("Your current balance: "+currentUser.getBalance());
-                        currentUser.getTransactions().add(new Transactions(currentUser.getUserId(), "Withdrawn",withdrawAmount));
+                        System.out.println("Your current balance is:"+currentUser.getBalance());
+                        System.out.println("Your current ATM balance is:"+ATM.getBalance());
+                        currentUser.getTransactions().add(new Transactions("WithDraw", currentUser.getBalance()));//adds the transaction as objects
                         return;
-                    } else {
-                        System.out.println("Wrong denomination...Enter another Amount");
-                        break;
+                    }
+                    else {
+                        System.out.println("Wrong denomination");
+                        return;
                     }
                 }
-            }
-            System.out.println("Insufficient user balance");
+                }
+            System.out.println("Insufficient balance in your account");
             return;
+            }
+            System.out.println("Insufficient balance in ATM");
         }
-        System.out.println("Insufficient ATM balance");
+        public static long performWithdraw(long withDrawAmount,Notes notes,ArrayList<String> showNoteCount){
+        long note=Integer.parseInt(notes.getNote());//converts the string notes into long
+        long count=withDrawAmount/note;//calculates the no.of note count  if the withdrawal amount is 4500...at the loop of first 2000 note...count = 4500(withdrawal amount)/2000(note)...now the count stores the value 2
+                if(withDrawAmount >= note&&notes.getCount()>0){//checks the condition...withdraw amount should be greater than each note and count should be greater than 0
+                    if(count<=notes.getCount()){//the calculated count should be less than notes
+                      long withDrawAmount1=withDrawAmount-note*count;//the amount should be reduced by multiplying with the note and no.of notes For example...withDrawAmount1 = 4500(withdrawAmount)-2000(note)*2(count)...now the withDrawAmount1 stores 500
+                      notes.setCount(notes.getCount()-count);//sets the note count
+                      showNoteCount.add("You got "+count+" "+notes.getNote()+" note");//adds the no.of notes given to the arraylist of string object(showNoteCount)
+                      return withDrawAmount1;
+                  }
+                   else{//this is the condition block when it has lesser number of notes than the expected no.of notes(count>=notes.getCount())
+                      long withDrawAmount1=withDrawAmount-note*notes.getCount();//calculates the amount...withdrawAmount1=4500(withDrawAmount)-2000(note)*available note count in the arraylist(notes.getCount())
+                      showNoteCount.add("You got "+notes.getCount()+" "+notes.getNote()+"notes");
+                      notes.setCount(0);//sets the note count to 0...which means all the available notes was supplied
+                      return withDrawAmount1;
+                  }
+            }
+                return withDrawAmount;
+        }
+    public  static void viewBalance(User currentUser){
+        System.out.println("Your current Balance of your account is: "+currentUser.getBalance());//shows the current balance of the user
     }
-    public static void viewUserTransaction(User currentUser){
-    for(Transactions transactions:currentUser.getTransactions()){
-        System.out.println(transactions.getName()+" has "+transactions.getTransaction()+" amount of "+transactions.getBalance());
-        return;
+    public static void changePin(Scanner s,User currentUser){
+        System.out.println("Enter the pin to be changed:");
+        String changePin=s.nextLine();//gets the pin to be changed
+        currentUser.setPin(changePin);//sets the new pin
+        System.out.println("The pin has been changed successfully");
     }
-        System.out.println("No Transactions done");
+    public static void viewTransaction(Scanner s,User currentUser){
+        System.out.println("The transactions are...");
+        for (Transactions transactions: currentUser.getTransactions()){//loops the arraylist of user transaction
+            System.out.println(currentUser.getUserId()+" has "+transactions.getTypeOfTransaction()+" amount of "+transactions.getBalance());//prints the transaction of specific user
+        }
+
     }
 }

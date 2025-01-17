@@ -1,0 +1,9 @@
+package ATM.ListOfNotes;
+
+import ATM.Notes.Notes;
+
+public class FiveHundred extends Notes {
+    public FiveHundred(String note,long count){//constructor for the class FiveHundred
+        super(note,count);
+    }
+}
