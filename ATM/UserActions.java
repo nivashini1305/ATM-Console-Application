@@ -55,7 +55,7 @@ public class UserActions {
                 ATM.setBalance(ATM.getBalance()+depositAmount);//sets the ATM balance
                 System.out.println("The current balance of your account:"+currentUser.getBalance());//prints the user balance
                 System.out.println("The current balance of ATM:"+ATM.getBalance());//prints the ATM balance
-                currentUser.getTransactions().add(new Transactions( "deposited", currentUser.getBalance()));//adds the object of Transaction
+                currentUser.getTransactions().add(new Transactions( "deposited", depositAmount, currentUser.getUserId()));//adds the object of Transaction
         }
         else {
             System.out.println("Wrong denomination");
@@ -90,7 +90,7 @@ public class UserActions {
                         }
                         System.out.println("Your current balance is:"+currentUser.getBalance());
                         System.out.println("Your current ATM balance is:"+ATM.getBalance());
-                        currentUser.getTransactions().add(new Transactions("WithDraw", currentUser.getBalance()));//adds the transaction as objects
+                        currentUser.getTransactions().add(new Transactions("WithDraw", amount, currentUser.getUserId()));//adds the transaction as objects
                         return;
                     }
                     else {
@@ -135,7 +135,7 @@ public class UserActions {
     public static void viewTransaction(Scanner s,User currentUser){
         System.out.println("The transactions are...");
         for (Transactions transactions: currentUser.getTransactions()){//loops the arraylist of user transaction
-            System.out.println(currentUser.getUserId()+" has "+transactions.getTypeOfTransaction()+" amount of "+transactions.getBalance());//prints the transaction of specific user
+            System.out.println(transactions.getName()+" has "+transactions.getTypeOfTransaction()+" amount of "+transactions.getBalanceAmount());//prints the transaction of specific user
         }
 
     }

@@ -7,7 +7,7 @@ public class Notes implements Cloneable{
         this.note=note;
         this.count=count;
     }
-
+// getter and setter methods for note count
     public void setNote(String note) {
         this.note = note;
     }

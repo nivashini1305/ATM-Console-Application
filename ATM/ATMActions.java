@@ -3,11 +3,11 @@ import java.util.Scanner;
 public class ATMActions {
     public static void start() throws CloneNotSupportedException {
         Scanner s = new Scanner(System.in);
+        Admin admin=new Admin("admin","123");//sets the admin name and pin
+        ATM.getAccounts().add(admin);//the admin id and admin pin has been set to the admin's array list
         while (true){//while loop which is executed until the user exits
             System.out.println("Do you want Login as \n1.Admin\n2.User\n3.Exit");
             int loginOption = Integer.parseInt(s.nextLine());
-            Admin admin=new Admin("admin","123");//sets the admin name and pin
-            ATM.getAccounts().add(admin);//the admin id and admin pin has been set to the admin's array list
             switch (loginOption){
                 case 1:
                     Accounts currentAdmin=AdminAction.adminLogin(s);//if the option is 1,the admin login method calls and stores the return object into a variable
