@@ -1,153 +1,129 @@
 package ATM;
-
 import ATM.Notes.Notes;
 
 import java.util.Scanner;
 
-public class AdminAction {
-    public static Accounts adminLogin(Scanner s) {
-        System.out.print("Enter the Admin id:");
-        String adminId = s.nextLine();
-        System.out.print("Enter the Admin Pin:");
-        String adminPin = s.nextLine();
-        for (Accounts admin : ATM.getAccounts()) {//loops the admin array list
-            if (admin instanceof Admin) {
-                if (admin.getUserId().equals(adminId) && admin.getPin().equals(adminPin)) {//checks the entered admin id and pin
-                    return admin;// returns the admin object if the condition is true
-                } else if (admin.getUserId().equals(adminId) && !admin.getPin().equals(adminPin)) {//this is condition block if the entered pin is wrong
-                    System.out.println("Wrong pin");
-                    Admin admin1 = new Admin(null, null);//sets the admin id and pin object as null
-                    return admin1;
-                }
+public class AdminAction{
+    public static Admin adminLogin(Scanner s){
+        System.out.print("Enter the admin Id:");
+        String adminName = s.nextLine();
+        System.out.print("Enter the admin pin:");
+        String adminPin=s.nextLine();
+        for(Admin admin:ATM.getAdmin()){
+            if(admin.getAdminName().equals(adminName)&&admin.getAdminPin().equals(adminPin)){
+                return admin;
+            } else if (admin.getAdminName().equals(adminName)&& !admin.getAdminPin().equals(adminPin)) {
+                Admin admin1=new Admin(null,null);
+                return admin1;
             }
         }
         return null;
     }
-
-    public static void addUser(Scanner s) {
-        System.out.println("Enter the user to be added:");
-        String userIdToAdd = s.nextLine();//enters the user id to add
-        System.out.println("Enter the user pin:");
-        String userPinToAdd = s.nextLine();//enters the user pin to add
-        User user1 = new User(userIdToAdd, userPinToAdd, 0);//creates an object for user and the id and pin is passed as parameter
-        ATM.getAccounts().add(user1);//add the user object to the arraylist
-        System.out.println("User added successfully");
+    public static void  addUser(Scanner s){
+        System.out.print("Enter the user to be added:");
+        String userName = s.nextLine();
+        System.out.print("Enter the user pin:");
+        String userPin = s.nextLine();
+        User user = new User(userName,userPin);
+        ATM.getUsers().add(user);
+        System.out.println("User successfully added");
     }
-
-    public static void deleteUser(Scanner s) {
-        for (Accounts user : ATM.getAccounts()) {
-            if (user instanceof User) {//checks user is the object of the class User
-                System.out.println("->" + user.getUserId());
+    public static void deleteUser(Scanner s){
+        System.out.println("The availabe users are:");
+        for(User user:ATM.getUsers()){
+            System.out.println("->"+user.getUserId());
+        }
+        System.out.println("Enter the user to be deleted:");
+        String deleteUser = s.nextLine();
+        for(User users:ATM.getUsers()){
+            if(users.getUserId().equals(deleteUser)){
+                ATM.getUsers().remove(users);
+                System.out.println("Successfully deleted");
+                return;
             }
         }
-        System.out.print("Enter the user to be deleted:");
-        String userToDelete = s.nextLine();
-        for (Accounts users : ATM.getAccounts()) {//loops the user arraylist
-            if (users instanceof User) {
-                if (users.getUserId().equals(userToDelete)) {//checks the given username is available in arraylist
-                    ATM.getAccounts().remove(users);//removes the user
-                    System.out.println("Successfully deleted");
-                    return;
-                }
-            }
-        }
-        System.out.println("User not found!!");
+        System.out.println("No users found");
     }
-
-    public static void depositMoney(Scanner s, Admin currentAdmin) {
+    public static void depositMoney(Scanner s,Admin currentAdmin) {
         System.out.println("Enter the amount to be deposited:");
-        long depositAmount = Long.parseLong(s.nextLine());//enters money to deposit
-        System.out.print("Enter the count of 2000 notes:");
-        long note2k = Long.parseLong(s.nextLine());// number of 2000 rupee note
-        System.out.print("Enter the count of 500 notes:");
-        long note5h = Long.parseLong(s.nextLine());// number of 500 rupee note
-        System.out.print("Enter the count of 200 notes:");
-        long note2h = Long.parseLong(s.nextLine());// number of 200 rupee note
-        System.out.print("Enter the count of 100 notes:");
-        long note1h = Long.parseLong(s.nextLine());// number of 100 rupee note
-        long denominationamount = 2000 * note2k + 500 * note5h + 200 * note2h + 100 * note1h;//calculates  all the amount of each rupee note
-        if (depositAmount == denominationamount) {//checks calculated amount and deposited amount
-            System.out.println("Denomination successfully done!!");
-            for (Notes notes : ATM.getNotes()) {//enhanced for loop to check each notes in ATM
-                String note = notes.getNote();//stores  each note in the note variable
-                switch (note) {//switch case to set the note count for each note
+        long depositMoney = Long.parseLong(s.nextLine());
+        System.out.println("Enter the number of two Thousand notes:");
+        long Notes2000 = Long.parseLong(s.nextLine());
+        System.out.println("Enter the number of two Five Hundred notes:");
+        long Notes500 = Long.parseLong(s.nextLine());
+        System.out.println("Enter the number of Two Hundred notes:");
+        long Notes200 = Long.parseLong(s.nextLine());
+        System.out.println("Enter the number of One hundred notes:");
+        long Notes100 = Long.parseLong(s.nextLine());
+        long totalAmount = Notes2000 * 2000 + Notes500 * 500 + Notes200 * 200 + Notes100 * 100;
+        if (depositMoney == totalAmount) {
+            for (Notes notes : ATM.getNotes()) {
+                String amount = notes.getNote();
+                switch (amount) {
                     case "2000":
-                        notes.setCount(notes.getCount() + note2k);
+                        notes.setCount(notes.getCount() + Notes2000);
+                        break;
                     case "500":
-                        notes.setCount(notes.getCount() + note5h);
+                        notes.setCount(notes.getCount() + Notes500);
+                        break;
                     case "200":
-                        notes.setCount(notes.getCount() + note2h);
+                        notes.setCount(notes.getCount() + Notes200);
+                        break;
                     case "100":
-                        notes.setCount(notes.getCount() + note1h);
+                        notes.setCount(notes.getCount() + Notes100);
+                        break;
                 }
             }
-            ATM.setBalance(ATM.getBalance() + depositAmount);//sets the ATM balance
-            System.out.println("The current balance of ATM:" + ATM.getBalance());//prints the ATM balance
-            currentAdmin.getTransactions().add(new Transactions("deposited", depositAmount,currentAdmin.getUserId()));//adds the object of Transaction
-        } else {
-            System.out.println("Wrong denomination");
+                ATM.setBalance(ATM.getBalance() + depositMoney);
+                System.out.println("The amount of ruppees " + depositMoney + " has been successfully credited");
+                System.out.println("Your current balance:" + ATM.getBalance());
+                currentAdmin.getAdminTransactions().add(new Transactions("Admin", "Deposited", depositMoney));
+        }
+        else{
+            System.out.println("Wrong denominations");
         }
     }
-
-    public static void viewTransaction(Scanner s, Admin currentAdmin) {
-        System.out.println("View Transactions of\n1.Admin\n2.User\n3.All");
-        int transactionOption = Integer.parseInt(s.nextLine());//enters the option to view the transaction
-        switch (transactionOption) {
+    public static void viewTransaction(Scanner s,Admin currentAdmin){
+        System.out.println("View Transaction of\n1.Admin\n2.User\n3.All");
+        int transactionOption=Integer.parseInt(s.nextLine());
+        switch (transactionOption){
             case 1:
-                if (!currentAdmin.getTransactions().isEmpty()) {
-                    System.out.println("The transactions are:");
-                    for (Transactions transactions : currentAdmin.getTransactions()) {//loops the admin transaction
-                        System.out.println(transactions.getName() + " has " + transactions.getTypeOfTransaction() + " the amount of " + transactions.getBalanceAmount());//prints the admin transaction
-                    }
-                    return;
+                for(Transactions transactions:currentAdmin.getAdminTransactions()){
+                    System.out.println("The admin transactions are...");
+                    System.out.println("The "+transactions.getName()+" has "+transactions.getTransaction()+" amount of "+transactions.getBalance());
                 }
-                System.out.println("No Admin Transaction");
+                System.out.println("No Transactions found");
                 break;
-            case 2://transaction for the specific user
-                for (Accounts user : ATM.getAccounts()) {
-                    if (user instanceof User) {
-                        System.out.println("->" + user.getUserId());
-                    }
+            case 2:
+                for(User users:ATM.getUsers()) {
+                    System.out.println("->" + users.getUserId());
                 }
-                System.out.println("Enter the user name to see Transaction");
-                String userName = s.nextLine();
-                boolean transactionFound = false;
-                for (Accounts user : ATM.getAccounts()) {
-                    if (user instanceof User) {
-                        if (user.getUserId().equals(userName)) {//checks the user id with the given user id
-                            for (Transactions transactions : user.getTransactions()) {//loop for user transaction
-                                System.out.println("The transaction of " + user.getUserId() + " has " + transactions.getTypeOfTransaction() + " the amount of " + transactions.getBalanceAmount());
-                                transactionFound = true;
+                    for(User user:ATM.getUsers()) {
+                        System.out.println("Enter the user name to show the transaction:");
+                        String nameOftheUser= s.nextLine();
+                        if (nameOftheUser.equals(user.getUserId())) {
+                            for (Transactions userTransaction : user.getTransactions()) {
+                                System.out.println("The transacations of " + userTransaction.getName() + " has " + userTransaction.getTransaction() + " amount of " + userTransaction.getBalance());
                             }
-                        }
-                        else{
-                            System.out.println("No user found!!");
+                            System.out.println("No transaction found");
                             return;
                         }
-                    }
-                }
 
-                if (!transactionFound) {
-                    System.out.println("No Transaction found");
-                }
-                break;
+                    }
+                System.out.println("Invalid user name");
             case 3:
-                for (Accounts admin : ATM.getAccounts()) {
-                    if (admin instanceof Admin) {
-                        for (Transactions transactions : currentAdmin.getTransactions()) {//loops for admin transaction
-                            System.out.println(currentAdmin.getUserId() + " has " + transactions.getTypeOfTransaction() + " the amount of " + transactions.getBalanceAmount());
-                        }
-                    }
+                for(Transactions transactions:currentAdmin.getAdminTransactions()){
+                    System.out.println("The admin transactions are...");
+                    System.out.println("The "+transactions.getName()+" has "+transactions.getTransaction()+" amount of "+transactions.getBalance());
                 }
-
-
-                for (Accounts user : ATM.getAccounts()) {//loops all the user transaction and prints
-                    if (user instanceof User) {
-                        for (Transactions transactions : user.getTransactions()) {
-                            System.out.println("The transaction of " + user.getUserId() + " has " + transactions.getTypeOfTransaction() + " the amount of " + transactions.getBalanceAmount());
-                        }
+                for(User user:ATM.getUsers()) {
+                    for (Transactions userTransaction : user.getTransactions()) {
+                        System.out.println("The transacations of the user " +userTransaction.getName()+" has "+userTransaction.getTransaction()+" the amount of " +userTransaction.getBalance());
                     }
+                    System.out.println("No transactions done");
+                    return;
                 }
+                System.out.println("No Transactions found");
         }
     }
 }

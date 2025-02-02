@@ -1,18 +1,28 @@
 package ATM;
 
-import java.util.ArrayList;
-
 public class Transactions {
-    private static ArrayList<Transactions> transactions=new ArrayList<>();//arraylist for transaction
-    private String typeOfTransaction;//declares string variable for the transaction(either deposit or withdraw)
-    private long balanceAmount;//declares a variable for balance
     private String name;
-    public Transactions(String typeOfTransaction,long balanceAmount,String name){//constructor for transaction
-        this.typeOfTransaction=typeOfTransaction;
-        this.balanceAmount=balanceAmount;
+    private String transaction;
+    private long balance;
+    public Transactions(String name,String transaction,long balance){
         this.name=name;
+        this.transaction=transaction;
+        this.balance=balance;
     }
-//getter and setter method
+    public void setBalance(long balance) {
+        this.balance = balance;
+    }
+    public long getBalance() {
+        return balance;
+    }
+    public void setTransaction(String transaction) {
+        this.transaction = transaction;
+    }
+
+    public String getTransaction() {
+        return transaction;
+    }
+
     public void setName(String name) {
         this.name = name;
     }
@@ -21,19 +31,4 @@ public class Transactions {
         return name;
     }
 
-    public static ArrayList<Transactions> getTransactions() {//getter method for transaction
-        return transactions;
-    }
-    public void setBalance(long balance) {//setter method for balance
-        this.balanceAmount = balance;
-    }
-    public long getBalanceAmount(){//getter method for balance
-        return balanceAmount;
-    }
-    public void setTypeOfTransaction(String typeOfTransaction) {
-        this.typeOfTransaction = typeOfTransaction;
-    }
-    public String getTypeOfTransaction() {
-        return typeOfTransaction;
-    }
 }
