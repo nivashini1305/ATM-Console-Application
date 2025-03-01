@@ -1,12 +1,11 @@
 package ATM;
-
+import ATM.Notes.Note;
 import ATM.Notes.Notes;
-
 import java.util.ArrayList;
 import java.util.Scanner;
 
-public class UserActions {
-    public static Accounts userLogin(Scanner s){//method to login for user
+public  class UserActions implements UserActionInterface {
+    public  Accounts userLogin(Scanner s){//method to login for user
         System.out.print("Enter the user id:");
         String userId=s.nextLine();
         System.out.print("Enter the user pin:");
@@ -24,7 +23,8 @@ public class UserActions {
         }
         return null;
     }
-    public static void depositAmount(Scanner s,User currentUser){//method to deposit money by user
+    public  void depositAmount(Scanner s,Accounts user, Note newNote){//method to deposit money by user
+        User currentUser=(User)user;
         System.out.println("Enter the amount to be deposited:");
         long depositAmount=Long.parseLong(s.nextLine());//enters money to deposit
         System.out.print("Enter the count of 2000 notes:");
@@ -38,7 +38,7 @@ public class UserActions {
         long denominationamount=2000*note2k+500*note5h+200*note2h+100*note1h;//calculates  all the amount of each rupee note
         if(depositAmount==denominationamount){//checks calculated amount and deposited amount
             System.out.println("Denomination successfully done!!");
-            for(Notes notes:ATM.getNotes()) {//enhanced for loop to check each notes in ATM
+            for(Notes notes:newNote.getArr()) {//enhanced for loop to check each notes in ATM
                 String note = notes.getNote();//stores  each note in the note variable
                 switch (note) {//switch case to set the note count for each note
                     case "2000":
@@ -61,19 +61,19 @@ public class UserActions {
             System.out.println("Wrong denomination");
         }
     }
-    public static void withDrawAmount(Scanner s, User currentUser) throws CloneNotSupportedException {
+    public  void withDrawAmount(Scanner s, User currentUser,Note note) throws CloneNotSupportedException {
         System.out.println("Enter the amount to be withdraw:");
         long withDrawAmount = Long.parseLong(s.nextLine());//enters the amount to be withdrawn
-        ArrayList<Notes> duplicate = new ArrayList<>();//creates another arraylist for Notes to clone and store the updated notes instead of changing the original array list
+        Note<Notes> duplicate = new Note<>();//creates a Note object to clone and store the updated notes instead of changing the original array list
         ArrayList<String> showNoteCount = new ArrayList<>();//arraylist for string to store the notes which will be given to the number of notes to be withdrawn
         if (withDrawAmount <= ATM.getBalance()) {//checks the withdrawal amount that should be less than ATM balance
             if (withDrawAmount <= currentUser.getBalance()) {//checks the withdrawal amount that should be less than current balance of user
                 long amount = withDrawAmount;//stores the withdrawal to the variable
-                for (Notes notes : ATM.getNotes()) {//loops the notes arraylist
+                for (Notes notes : note.getArr()) {//loops the notes arraylist
                     duplicate.add((Notes)notes.clone());//clones the notes object and adds to the duplicate arraylist
                     }
                 if (withDrawAmount!=0) {
-                    for (Notes notes : duplicate) {//loop for duplicate arraylist
+                    for (Notes notes : duplicate.getArr()) {//loop for duplicate arraylist
                         String amountOfNote = notes.getNote();//stores each note in the amountOfNote
                         switch (amountOfNote) {
                             case "2000", "500", "200", "100":
@@ -82,7 +82,7 @@ public class UserActions {
                         }
                     }
                     if (withDrawAmount == 0) {
-                        ATM.setNotes(duplicate);//sets the duplicate arraylist to the original arraylist
+                        ATM.setNotesArray(duplicate);//sets the duplicate arraylist to the original arraylist
                         currentUser.setBalance(currentUser.getBalance() - amount);//sets the user balance after withdrawal
                         ATM.setBalance(ATM.getBalance() - amount);//sets the ATM balance
                         for( String a:showNoteCount){
@@ -124,16 +124,16 @@ public class UserActions {
             }
                 return withDrawAmount;
         }
-    public  static void viewBalance(User currentUser){
+    public   void viewBalance(User currentUser){
         System.out.println("Your current Balance of your account is: "+currentUser.getBalance());//shows the current balance of the user
     }
-    public static void changePin(Scanner s,User currentUser){
+    public  void changePin(Scanner s,User currentUser){
         System.out.println("Enter the pin to be changed:");
         String changePin=s.nextLine();//gets the pin to be changed
         currentUser.setPin(changePin);//sets the new pin
         System.out.println("The pin has been changed successfully");
     }
-    public static void viewTransaction(Scanner s,User currentUser){
+    public  void viewTransaction(Scanner s,User currentUser){
         System.out.println("The transactions are...");
         for (Transactions transactions: currentUser.getTransactions()){//loops the arraylist of user transaction
             System.out.println(transactions.getName()+" has "+transactions.getTypeOfTransaction()+" amount of "+transactions.getBalanceAmount());//prints the transaction of specific user

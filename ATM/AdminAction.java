@@ -1,11 +1,12 @@
 package ATM;
 
+import ATM.Notes.Note;
 import ATM.Notes.Notes;
 
 import java.util.Scanner;
 
-public class AdminAction {
-    public static Accounts adminLogin(Scanner s) {
+public  class AdminAction implements AdminActionInterface {
+    public  Accounts adminLogin(Scanner s) {
         System.out.print("Enter the Admin id:");
         String adminId = s.nextLine();
         System.out.print("Enter the Admin Pin:");
@@ -24,7 +25,7 @@ public class AdminAction {
         return null;
     }
 
-    public static void addUser(Scanner s) {
+    public  void addUser(Scanner s) {
         System.out.print("Enter the user to be added:");
         String userIdToAdd = s.nextLine();//enters the user id to add
         System.out.print("Enter the user pin:");
@@ -34,7 +35,7 @@ public class AdminAction {
         System.out.println("User added successfully");
     }
 
-    public static void deleteUser(Scanner s) {
+    public  void deleteUser(Scanner s) {
         for (Accounts user : ATM.getAccounts()) {
             if (user instanceof User) {//checks user is the object of the class User
                 System.out.println("->" + user.getUserId());
@@ -54,7 +55,7 @@ public class AdminAction {
         System.out.println("User not found!!");
     }
 
-    public static void depositMoney(Scanner s, Admin currentAdmin) {
+    public  void depositMoney(Scanner s, Accounts currentAdmin, Note note) {
         System.out.println("Enter the amount to be deposited:");
         long depositAmount = Long.parseLong(s.nextLine());//enters money to deposit
         System.out.print("Enter the count of 2000 notes:");
@@ -65,12 +66,12 @@ public class AdminAction {
         long note2h = Long.parseLong(s.nextLine());// number of 200 rupee note
         System.out.print("Enter the count of 100 notes:");
         long note1h = Long.parseLong(s.nextLine());// number of 100 rupee note
-        long denominationamount = 2000 * note2k + 500 * note5h + 200 * note2h + 100 * note1h;//calculates  all the amount of each rupee note
-        if (depositAmount == denominationamount) {//checks calculated amount and deposited amount
+        long denominationAmount = 2000 * note2k + 500 * note5h + 200 * note2h + 100 * note1h;//calculates  all the amount of each rupee note
+        if (depositAmount == denominationAmount) {//checks calculated amount and deposited amount
             System.out.println("Denomination successfully done!!");
-            for (Notes notes : ATM.getNotes()) {//enhanced for loop to check each notes in ATM
-                String note = notes.getNote();//stores  each note in the note variable
-                switch (note) {//switch case to set the note count for each note
+            for (Notes notes : note.getArr()) {//enhanced for loop to check each notes in ATM
+                String noteObj = notes.getNote();//stores  each note in the note variable
+                switch (noteObj) {//switch case to set the note count for each note
                     case "2000":
                         notes.setCount(notes.getCount() + note2k);
                     case "500":
@@ -89,7 +90,7 @@ public class AdminAction {
         }
     }
 
-    public static void viewTransaction(Scanner s, Admin currentAdmin) {
+    public  void viewTransaction(Scanner s, Admin currentAdmin) {
         System.out.println("View Transactions of\n1.Admin\n2.User\n3.All");
         int transactionOption = Integer.parseInt(s.nextLine());//enters the option to view the transaction
         switch (transactionOption) {
