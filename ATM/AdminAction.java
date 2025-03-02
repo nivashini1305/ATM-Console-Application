@@ -1,12 +1,14 @@
 package ATM;
 
+import ATM.Interfaces.AdminActionInterface;
 import ATM.Notes.Note;
 import ATM.Notes.Notes;
 
 import java.util.Scanner;
 
 public  class AdminAction implements AdminActionInterface {
-    public  Accounts adminLogin(Scanner s) {
+    public  Accounts login() {
+        Scanner s= new Scanner(System.in);
         System.out.print("Enter the Admin id:");
         String adminId = s.nextLine();
         System.out.print("Enter the Admin Pin:");
@@ -25,7 +27,8 @@ public  class AdminAction implements AdminActionInterface {
         return null;
     }
 
-    public  void addUser(Scanner s) {
+    public  void addUser() {
+        Scanner s= new Scanner(System.in);
         System.out.print("Enter the user to be added:");
         String userIdToAdd = s.nextLine();//enters the user id to add
         System.out.print("Enter the user pin:");
@@ -35,7 +38,8 @@ public  class AdminAction implements AdminActionInterface {
         System.out.println("User added successfully");
     }
 
-    public  void deleteUser(Scanner s) {
+    public  void deleteUser() {
+        Scanner s= new Scanner(System.in);
         for (Accounts user : ATM.getAccounts()) {
             if (user instanceof User) {//checks user is the object of the class User
                 System.out.println("->" + user.getUserId());
@@ -55,7 +59,12 @@ public  class AdminAction implements AdminActionInterface {
         System.out.println("User not found!!");
     }
 
-    public  void depositMoney(Scanner s, Accounts currentAdmin, Note note) {
+    public  void depositMoney( Accounts currentAccount) {
+        Scanner s = new Scanner(System.in);
+        Admin currentAdmin = null;
+        if(currentAccount instanceof Admin){
+            currentAdmin = (Admin) currentAccount;
+        }
         System.out.println("Enter the amount to be deposited:");
         long depositAmount = Long.parseLong(s.nextLine());//enters money to deposit
         System.out.print("Enter the count of 2000 notes:");
@@ -69,7 +78,7 @@ public  class AdminAction implements AdminActionInterface {
         long denominationAmount = 2000 * note2k + 500 * note5h + 200 * note2h + 100 * note1h;//calculates  all the amount of each rupee note
         if (depositAmount == denominationAmount) {//checks calculated amount and deposited amount
             System.out.println("Denomination successfully done!!");
-            for (Notes notes : note.getArr()) {//enhanced for loop to check each notes in ATM
+            for (Notes notes : ATM.getNotesArray().getArr()) {//enhanced for loop to check each notes in ATM
                 String noteObj = notes.getNote();//stores  each note in the note variable
                 switch (noteObj) {//switch case to set the note count for each note
                     case "2000":
@@ -90,7 +99,8 @@ public  class AdminAction implements AdminActionInterface {
         }
     }
 
-    public  void viewTransaction(Scanner s, Admin currentAdmin) {
+    public  void viewTransaction(Admin currentAdmin) {
+        Scanner s= new Scanner(System.in);
         System.out.println("View Transactions of\n1.Admin\n2.User\n3.All");
         int transactionOption = Integer.parseInt(s.nextLine());//enters the option to view the transaction
         switch (transactionOption) {

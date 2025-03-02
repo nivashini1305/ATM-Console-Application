@@ -1,11 +1,13 @@
 package ATM;
+import ATM.Interfaces.UserActionInterface;
 import ATM.Notes.Note;
 import ATM.Notes.Notes;
 import java.util.ArrayList;
 import java.util.Scanner;
 
 public  class UserActions implements UserActionInterface {
-    public  Accounts userLogin(Scanner s){//method to login for user
+    public  Accounts login(){//method to login for user
+        Scanner s= new Scanner(System.in);
         System.out.print("Enter the user id:");
         String userId=s.nextLine();
         System.out.print("Enter the user pin:");
@@ -23,8 +25,13 @@ public  class UserActions implements UserActionInterface {
         }
         return null;
     }
-    public  void depositAmount(Scanner s,Accounts user, Note newNote){//method to deposit money by user
-        User currentUser=(User)user;
+    public  void depositMoney(Accounts currentAccount){//method to deposit money by user
+        Scanner s= new Scanner(System.in);
+        User currentUser=null;
+        if(currentAccount instanceof User){
+            currentUser=(User) currentAccount;
+        }
+
         System.out.println("Enter the amount to be deposited:");
         long depositAmount=Long.parseLong(s.nextLine());//enters money to deposit
         System.out.print("Enter the count of 2000 notes:");
@@ -38,6 +45,7 @@ public  class UserActions implements UserActionInterface {
         long denominationamount=2000*note2k+500*note5h+200*note2h+100*note1h;//calculates  all the amount of each rupee note
         if(depositAmount==denominationamount){//checks calculated amount and deposited amount
             System.out.println("Denomination successfully done!!");
+            Note<Notes> newNote=ATM.getNotesArray();
             for(Notes notes:newNote.getArr()) {//enhanced for loop to check each notes in ATM
                 String note = notes.getNote();//stores  each note in the note variable
                 switch (note) {//switch case to set the note count for each note
@@ -61,7 +69,8 @@ public  class UserActions implements UserActionInterface {
             System.out.println("Wrong denomination");
         }
     }
-    public  void withDrawAmount(Scanner s, User currentUser,Note note) throws CloneNotSupportedException {
+    public  void withDrawAmount(User currentUser) throws CloneNotSupportedException {
+        Scanner s= new Scanner(System.in);
         System.out.println("Enter the amount to be withdraw:");
         long withDrawAmount = Long.parseLong(s.nextLine());//enters the amount to be withdrawn
         Note<Notes> duplicate = new Note<>();//creates a Note object to clone and store the updated notes instead of changing the original array list
@@ -69,7 +78,7 @@ public  class UserActions implements UserActionInterface {
         if (withDrawAmount <= ATM.getBalance()) {//checks the withdrawal amount that should be less than ATM balance
             if (withDrawAmount <= currentUser.getBalance()) {//checks the withdrawal amount that should be less than current balance of user
                 long amount = withDrawAmount;//stores the withdrawal to the variable
-                for (Notes notes : note.getArr()) {//loops the notes arraylist
+                for (Notes notes : ATM.getNotesArray().getArr()) {//loops the notes arraylist
                     duplicate.add((Notes)notes.clone());//clones the notes object and adds to the duplicate arraylist
                     }
                 if (withDrawAmount!=0) {
@@ -77,7 +86,7 @@ public  class UserActions implements UserActionInterface {
                         String amountOfNote = notes.getNote();//stores each note in the amountOfNote
                         switch (amountOfNote) {
                             case "2000", "500", "200", "100":
-                                withDrawAmount = UserActions.performWithdraw(withDrawAmount, notes, showNoteCount);//calls the performwithdraw method for each object...for the first loop,the 2000 note goes and perform the perform withdraw method
+                                withDrawAmount = performWithdraw(withDrawAmount, notes, showNoteCount);//calls the perform withdraw method for each object...for the first loop,the 2000 note goes and perform the perform withdraw method
                                 break;
                         }
                     }
@@ -105,7 +114,7 @@ public  class UserActions implements UserActionInterface {
             }
             System.out.println("Insufficient balance in ATM");
         }
-        public static long performWithdraw(long withDrawAmount,Notes notes,ArrayList<String> showNoteCount){
+        public  long performWithdraw(long withDrawAmount,Notes notes,ArrayList<String> showNoteCount){
         long note=Integer.parseInt(notes.getNote());//converts the string notes into long
         long count=withDrawAmount/note;//calculates the no.of note count  if the withdrawal amount is 4500...at the loop of first 2000 note...count = 4500(withdrawal amount)/2000(note)...now the count stores the value 2
                 if(withDrawAmount >= note&&notes.getCount()>0){//checks the condition...withdraw amount should be greater than each note and count should be greater than 0
@@ -127,13 +136,14 @@ public  class UserActions implements UserActionInterface {
     public   void viewBalance(User currentUser){
         System.out.println("Your current Balance of your account is: "+currentUser.getBalance());//shows the current balance of the user
     }
-    public  void changePin(Scanner s,User currentUser){
+    public  void changePin(User currentUser){
+        Scanner s= new Scanner(System.in);
         System.out.println("Enter the pin to be changed:");
         String changePin=s.nextLine();//gets the pin to be changed
         currentUser.setPin(changePin);//sets the new pin
         System.out.println("The pin has been changed successfully");
     }
-    public  void viewTransaction(Scanner s,User currentUser){
+    public  void viewTransaction(User currentUser){
         System.out.println("The transactions are...");
         for (Transactions transactions: currentUser.getTransactions()){//loops the arraylist of user transaction
             System.out.println(transactions.getName()+" has "+transactions.getTypeOfTransaction()+" amount of "+transactions.getBalanceAmount());//prints the transaction of specific user

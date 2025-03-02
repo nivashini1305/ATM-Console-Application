@@ -19,11 +19,9 @@ public class ATM {
     public static Note<Notes> getNotesArray() {
         return notesArray;
     }
-
     public static void setNotesArray(Note<Notes> notesArray) {
         ATM.notesArray = notesArray;
     }
-
     public static ArrayList<Accounts> getAccounts() {
         return accounts;
     }
